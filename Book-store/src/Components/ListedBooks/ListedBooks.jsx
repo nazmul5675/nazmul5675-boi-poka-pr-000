@@ -5,58 +5,84 @@ import { useLoaderData } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getStoredReadList, getStoredWishList } from '../../Utility/addToDb';
 import Book from '../Book/Book';
-const ListedBooks = () => {
-    // readlist
 
+const ListedBooks = () => {
     const [readList, setReadList] = useState([]);
     const [wishList, setWishList] = useState([]);
+    const [sort, setSort] = useState('');
     const allBooks = useLoaderData();
 
-    //ideally we will directly grt the read book list from the database
     useEffect(() => {
-        const storedReadList = getStoredReadList();
-        const storedReadListInt = storedReadList.map(id => parseInt(id));
-        //worst way
-        // console.log(storedReadList, storedReadListInt, allBooks);
-        const readBookList = allBooks.filter(book => storedReadListInt.includes(book.bookId));
-        setReadList(readBookList);
-        // wishlist
-        //ideally we will directly get the read book list from the database
-        const storedWishList = getStoredWishList();
-        const storedWishListInt = storedWishList.map(id => parseInt(id));
-        //worst way
-        // console.log(storedReadList, storedReadListInt, allBooks);
+        const storedReadList = getStoredReadList().map(id => parseInt(id));
+        const storedWishList = getStoredWishList().map(id => parseInt(id));
 
-        const wishBookList = allBooks.filter(book => storedWishListInt.includes(book.bookId));
-        setWishList(wishBookList);
+        setReadList(allBooks.filter(book => storedReadList.includes(book.bookId)));
+        setWishList(allBooks.filter(book => storedWishList.includes(book.bookId)));
     }, [allBooks]);
+
+    // Sorting function
+    const handleSort = (sortType) => {
+        setSort(sortType);
+
+        const sortBooks = (books) => {
+            return [...books].sort((a, b) => {
+                if (sortType === 'Rating') return b.rating - a.rating;
+                if (sortType === 'Number Of Pages') return b.totalPages - a.totalPages;
+                if (sortType === 'Publisher Year') return b.yearOfPublishing - a.yearOfPublishing;
+                return 0;
+            });
+        };
+
+        setReadList(sortBooks(readList));
+        setWishList(sortBooks(wishList));
+    };
 
     return (
         <div>
-            <div><h1 className="text-xl font-bold bg-gray-200 w-full py-5 text-center rounded-xl my-5">Books</h1></div>
-            <div className='flex justify-center'><button className='btn bg-green-500 text-white'>sort By <FaAngleDown /></button></div>
+            <h1 className="text-xl font-bold bg-gray-200 w-full py-5 text-center rounded-xl my-5">
+                Books
+            </h1>
+
+            <div className="dropdown flex justify-center">
+                <div tabIndex={0} role="button" className="btn m-1 bg-green-500 text-white">
+                    {sort ? `Sort by ${sort}` : 'Sort By'}
+                    <FaAngleDown />
+                </div>
+                <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li onClick={() => handleSort('Rating')}>
+                        <a>Rating</a>
+                    </li>
+                    <li onClick={() => handleSort('Number Of Pages')}>
+                        <a>Number Of Pages</a>
+                    </li>
+                    <li onClick={() => handleSort('Publisher Year')}>
+                        <a>Publisher Year</a>
+                    </li>
+                </ul>
+            </div>
+
             <Tabs>
                 <TabList>
-                    <Tab ><span className='font-semibold'>Read Books</span></Tab>
-                    <Tab ><span className='font-semibold'>Wishlist Book</span></Tab>
+                    <Tab><span className="font-semibold">Read Books</span></Tab>
+                    <Tab><span className="font-semibold">Wishlist Books</span></Tab>
                 </TabList>
 
                 <TabPanel>
-                    <div>
-
-                        {
-                            readList.map(book => <Book key={book.bookID} book={book}></Book>)
-                        }
-                    </div>
+                    {readList.length > 0 ? (
+                        readList.map(book => <Book key={book.bookId} book={book} />)
+                    ) : (
+                        <p>No books in your read list.</p>
+                    )}
                 </TabPanel>
                 <TabPanel>
-
-                    {
-                        wishList.map(book => <Book key={book.bookID} book={book}></Book>)
-                    }
+                    {wishList.length > 0 ? (
+                        wishList.map(book => <Book key={book.bookId} book={book} />)
+                    ) : (
+                        <p>No books in your wishlist.</p>
+                    )}
                 </TabPanel>
             </Tabs>
-        </div >
+        </div>
     );
 };
 
