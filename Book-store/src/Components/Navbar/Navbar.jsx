@@ -1,7 +1,16 @@
+import { NavLink } from "react-router-dom";
+
 const Navbar = () => {
+
+    const links = <>
+        <li><NavLink to="/">Home</NavLink></li>
+        <li><NavLink to="/listedBooks">Listed Books</NavLink></li>
+        <li> <NavLink to="/pagesToRead"> Pages to Read </NavLink> </li>
+    </>
+
     return (
         <nav>
-            <div className="navbar bg-base-100 shadow-sm">
+            <div className="navbar bg-base-100 ">
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -21,23 +30,22 @@ const Navbar = () => {
                         <ul
                             tabIndex={0}
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                            <li><a>Home</a></li>
-                            <li><a>Listed Books</a></li>
-                            <li><a>Pages to Read</a></li>
+                            {links}
                         </ul>
                     </div>
-                    <a className="btn btn-ghost text-xl font-bold">BOOK STORE</a>
+                    <NavLink to='/'> <a className="btn btn-ghost text-xl font-bold">BOOK STORE</a> </NavLink>
+
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
-                        <li><a>Home</a></li>
-                        <li><a>Listed Books</a></li>
-                        <li><a>Pages to Read</a></li>
+                        {links}
                     </ul>
                 </div>
                 <div className="navbar-end gap-5">
-                    <a className="btn bg-[#23BE0A] text-white rounded-lg">Sign In</a>
-                    <a className="btn bg-[#59C6D2] text-white rounded-lg">Log In</a>
+                    <NavLink to='/SignIn'><a className="btn bg-[#23BE0A] text-white rounded-lg">Sign In</a></NavLink>
+                    <NavLink to='/logIn'><a className="btn bg-[#59C6D2] text-white rounded-lg">Log In</a></NavLink>
+
+
                 </div>
             </div>
         </nav>

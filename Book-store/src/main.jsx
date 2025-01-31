@@ -11,6 +11,13 @@ import ErrorPage from './Components/ErrorPage/ErrorPage';
 
 import DashBoard from './Components/DashBoard/DashBoard';
 import Home from './Components/Home/Home';
+import BookDetail from './Components/BookDetail/BookDetail';
+import ListedBooks from './Components/ListedBooks/ListedBooks';
+
+import { ToastContainer } from 'react-toastify';
+import PageNeedToFuture from './Components/pageNeedToFuture/pageNeedToFuture';
+import Login from './Components/Login/Login';
+import SignIn from './Components/SignIn/SignIn';
 
 const router = createBrowserRouter([
   {
@@ -23,8 +30,31 @@ const router = createBrowserRouter([
         element: <Home></Home>
       },
       {
+        path: 'books/:bookId',
+        element: <BookDetail></BookDetail>,
+        loader: () => fetch('/booksData.json') // do not load all  the books for one book.
+      },
+      {
         path: 'dashboard',
         element: <DashBoard></DashBoard>
+      },
+      {
+        path: 'listedBooks',
+        element: <ListedBooks></ListedBooks>,
+        // worst way to load some data
+        loader: () => fetch('/booksData.json') // do not load all  the books for one book.
+      },
+      {
+        path: 'pagesToRead',
+        element: <PageNeedToFuture></PageNeedToFuture>
+      },
+      {
+        path: 'logIn',
+        element: <Login></Login>
+      },
+      {
+        path: 'SignIn',
+        element: <SignIn></SignIn>
       }
     ]
   },
@@ -33,6 +63,8 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <RouterProvider router={router} />
+    <ToastContainer />
+
   </StrictMode>,
 )
 
